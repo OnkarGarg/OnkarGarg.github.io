@@ -85,6 +85,51 @@
             text-decoration: underline;
         }
 
+        .terminal-body {
+            max-height: 70vh;
+            overflow-y: auto; /* Enable vertical scrolling */
+            scrollbar-width: thin; /* Optional: customize scrollbar for Firefox */
+            scrollbar-color: #555 #2d2d2d; /* Optional: customize scrollbar colors */
+        }
+
+        /* Optional: Hide default scrollbar and style it for WebKit browsers (Chrome, Edge, Safari) */
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+        .terminal-body::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        #scrollToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #4caf4f4d;
+            color: #1e1e1e;
+            border: none;
+            border-radius: 50%; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            z-index: 1000;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #scrollToTop:hover {
+            background-color: #3a8b3e;
+            transform: scale(1.1);
+        }
+
+
         @media (max-width: 600px) {
             .terminal {
                 width: 90%;
@@ -108,20 +153,47 @@
                 width: 16px;
                 height: 16px;
             }
-            .terminal-body {
-                overflow-x: auto;
-                white-space: pre-wrap;
-            }
         }
     </style>
     <script>
         const initialContent = `
             <div class="command">
-                <span class="prompt">OnkargGarg@portfolio:~$</span>
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
                 <span class="input">whoami</span>
             </div>
             <div class="output">
                 <p>Hi, I'm Onkar Garg, a first year MEng AI student passionate about machine learning and data science.</p>
+            </div>
+            <div class="command">
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
+                <span class="input">ls projects</span>
+            </div>
+            <div class="output">
+                <ul>
+                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It let\'s the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
+                    <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
+                </ul>
+            </div>
+            <div class="command">
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
+                <span class="input">python future.py --help</span>
+            </div>
+            <div class="output">
+                <ul>
+                    <li><a href="#" onclick="showProject('Facial OSINT AI', '')">Development 1: Facial OSINT AI</a></li>
+                    <li><a href="#" onclick="showProject('Kindle', '')">Development 2: Kindle</a></li>
+                    <li><a href="#" onclick="showProject('Camera-based alarm', '')">Development 3: Camera-based alarm</a></li>
+                    <li><a href="#" onclick="showProject('Netflix data analysis', '')">Development 4: Netflix data analysis</a></li>
+                </ul>
+            </div>
+            <div class="command">
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
+                <span class="input">cat contact.txt</span>
+            </div>
+            <div class="output">
+                <p>Email: <a href="mailto:onkargarg6@example.com">onkargarg6@example.com</a></p>
+                <p>LinkedIn: <a href="https://www.linkedin.com/in/onkar-garg-2398872b0/" target="_blank">linkedin.com/in/onkar-garg</a></p>
+                <p>GitHub: <a href="https://github.com/OnkarGarg" target="_blank">github.com/OnkarGarg</a></p>
             </div>
         `;
     
@@ -147,22 +219,42 @@
             terminalBody.innerHTML += projectOutput;
         }
 
+        function showProject(name, description) {
+            const terminalBody = document.querySelector('.terminal-body');
+            const projectOutput = `
+                <div class="command">
+                    <span class="prompt">yourname@portfolio:~$</span>
+                    <span class="input">view ${name}</span>
+                </div>
+                <div class="output">
+                    <p>${description}</p>
+                </div>`;
+            terminalBody.innerHTML += projectOutput;
+            
+            // Scroll to the bottom to show the latest content
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
 
-        let startX, startY;
+                document.addEventListener('DOMContentLoaded', () => {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            const terminalBody = document.querySelector('.terminal-body');
 
-        document.querySelector('.terminal').addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
+            // Show/hide the button when scrolling
+            terminalBody.addEventListener('scroll', () => {
+                if (terminalBody.scrollTop > 100) {
+                    scrollToTopBtn.style.display = 'flex'; // Show the button
+                } else {
+                    scrollToTopBtn.style.display = 'none'; // Hide the button
+                }
+            });
 
-        document.querySelector('.terminal').addEventListener('touchmove', (e) => {
-            const deltaX = e.touches[0].clientX - startX;
-            const deltaY = e.touches[0].clientY - startY;
-
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                // Horizontal drag (e.g., swipe to dismiss)
-                e.currentTarget.style.transform = `translateX(${deltaX}px)`;
-            }
+            // Scroll smoothly to the top
+            scrollToTopBtn.addEventListener('click', () => {
+                terminalBody.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                });
+            });
         });
     </script>
 </head>
@@ -192,7 +284,18 @@
                 <ul>
                     <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It let\'s the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
                     <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
-                    <li><a href="#" onclick="showProject('AI Chatbot', 'This is a chatbot using NLP.')">Project 3: Reinforcement Learning Agent</a></li>
+                </ul>
+            </div>
+            <div class="command">
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
+                <span class="input">python future.py --help</span>
+            </div>
+            <div class="output">
+                <ul>
+                    <li><a href="#" onclick="showProject('Facial OSINT AI', 'Coming soon')">Development 1: Facial OSINT AI</a></li>
+                    <li><a href="#" onclick="showProject('Kindle', 'Coming soon')">Development 2: Kindle</a></li>
+                    <li><a href="#" onclick="showProject('Camera-based alarm', 'Coming soon')">Development 3: Camera-based alarm</a></li>
+                    <li><a href="#" onclick="showProject('Netflix data analysis', 'Coming soon')">Development 4: Netflix data analysis</a></li>
                 </ul>
             </div>
             <div class="command">
@@ -206,5 +309,6 @@
             </div>
         </div>
     </div>
+    <button id="scrollToTop" onclick="scrollToTop()">⬆</button>
 </body>
 </html>
