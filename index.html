@@ -55,6 +55,7 @@
             font-size: 14px;
         }
         .terminal-body {
+            transition: opacity 0.3s ease;
             background-color: #1e1e1e;
             padding: 20px;
             border-radius: 5px;
@@ -83,6 +84,35 @@
         a:hover {
             text-decoration: underline;
         }
+
+        @media (max-width: 600px) {
+            .terminal {
+                width: 90%;
+                padding: 15px;
+            }
+            .terminal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .terminal-header .title {
+                margin-top: 10px;
+                font-size: 12px;
+            }
+            .terminal-body {
+                font-size: 14px;
+            }
+            .command .input, .output p, .output ul {
+                word-wrap: break-word;
+            }
+            .terminal-header .buttons span {
+                width: 16px;
+                height: 16px;
+            }
+            .terminal-body {
+                overflow-x: auto;
+                white-space: pre-wrap;
+            }
+        }
     </style>
     <script>
         const initialContent = `
@@ -97,7 +127,11 @@
     
         function resetTerminal() {
             const terminalBody = document.querySelector('.terminal-body');
-            terminalBody.innerHTML = initialContent;
+            terminalBody.style.opacity = 0; // Start fade-out
+            setTimeout(() => {
+                terminalBody.innerHTML = initialContent; // Reset content
+                terminalBody.style.opacity = 1; // Fade-in
+            }, 300); // Match the transition duration
         }
         
         function showProject(name, description) {
@@ -112,6 +146,24 @@
             </div>`;
             terminalBody.innerHTML += projectOutput;
         }
+
+
+        let startX, startY;
+
+        document.querySelector('.terminal').addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.querySelector('.terminal').addEventListener('touchmove', (e) => {
+            const deltaX = e.touches[0].clientX - startX;
+            const deltaY = e.touches[0].clientY - startY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal drag (e.g., swipe to dismiss)
+                e.currentTarget.style.transform = `translateX(${deltaX}px)`;
+            }
+        });
     </script>
 </head>
 <body>
