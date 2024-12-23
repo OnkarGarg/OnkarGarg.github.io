@@ -170,7 +170,7 @@
             </div>
             <div class="output">
                 <ul>
-                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It let\'s the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
+                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It lets the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
                     <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
                 </ul>
             </div>
@@ -180,10 +180,10 @@
             </div>
             <div class="output">
                 <ul>
-                    <li><a href="#" onclick="showProject('Facial OSINT AI', '')">Development 1: Facial OSINT AI</a></li>
-                    <li><a href="#" onclick="showProject('Kindle', '')">Development 2: Kindle</a></li>
-                    <li><a href="#" onclick="showProject('Camera-based alarm', '')">Development 3: Camera-based alarm</a></li>
-                    <li><a href="#" onclick="showProject('Netflix data analysis', '')">Development 4: Netflix data analysis</a></li>
+                    <li><a href="#" onclick="showProject('Facial OSINT AI', 'Coming soon')">Development 1: Facial OSINT AI</a></li>
+                    <li><a href="#" onclick="showProject('Kindle', 'Coming soon')">Development 2: Kindle</a></li>
+                    <li><a href="#" onclick="showProject('Camera-based alarm', 'Coming soon')">Development 3: Camera-based alarm</a></li>
+                    <li><a href="#" onclick="showProject('Netflix data analysis', 'Coming soon')">Development 4: Netflix data analysis</a></li>
                 </ul>
             </div>
             <div class="command">
@@ -205,25 +205,12 @@
                 terminalBody.style.opacity = 1; // Fade-in
             }, 300); // Match the transition duration
         }
-        
-        function showProject(name, description) {
-            const terminalBody = document.querySelector('.terminal-body');
-            const projectOutput = `
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">view ${name}</span>
-            </div>
-            <div class="output">
-                <p>${description}</p>
-            </div>`;
-            terminalBody.innerHTML += projectOutput;
-        }
 
         function showProject(name, description) {
             const terminalBody = document.querySelector('.terminal-body');
             const projectOutput = `
                 <div class="command">
-                    <span class="prompt">yourname@portfolio:~$</span>
+                    <span class="prompt">OnkarGarg@portfolio:~$</span>
                     <span class="input">view ${name}</span>
                 </div>
                 <div class="output">
@@ -282,7 +269,7 @@
             </div>
             <div class="output">
                 <ul>
-                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It let\'s the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
+                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It lets the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
                     <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
                 </ul>
             </div>
