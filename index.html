@@ -84,12 +84,41 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        const initialContent = `
+            <div class="command">
+                <span class="prompt">OnkargGarg@portfolio:~$</span>
+                <span class="input">whoami</span>
+            </div>
+            <div class="output">
+                <p>Hi, I'm Onkar Garg, a first year MEng AI student passionate about machine learning and data science.</p>
+            </div>
+        `;
+    
+        function resetTerminal() {
+            const terminalBody = document.querySelector('.terminal-body');
+            terminalBody.innerHTML = initialContent;
+        }
+        
+        function showProject(name, description) {
+            const terminalBody = document.querySelector('.terminal-body');
+            const projectOutput = `
+            <div class="command">
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
+                <span class="input">view ${name}</span>
+            </div>
+            <div class="output">
+                <p>${description}</p>
+            </div>`;
+            terminalBody.innerHTML += projectOutput;
+        }
+    </script>
 </head>
 <body>
     <div class="terminal">
         <div class="terminal-header">
             <div class="buttons">
-                <span class="close"></span>
+                <span class="close" onclick="resetTerminal()"></span>
                 <span class="minimize"></span>
                 <span class="maximize"></span>
             </div>
@@ -109,19 +138,19 @@
             </div>
             <div class="output">
                 <ul>
-                    <li><a href="#">Project 1: AI Chatbot</a></li>
-                    <li><a href="#">Project 2: Image Recognition System</a></li>
-                    <li><a href="#">Project 3: Reinforcement Learning Agent</a></li>
+                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It let\'s the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
+                    <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
+                    <li><a href="#" onclick="showProject('AI Chatbot', 'This is a chatbot using NLP.')">Project 3: Reinforcement Learning Agent</a></li>
                 </ul>
             </div>
             <div class="command">
-                <span class="prompt">yourname@portfolio:~$</span>
+                <span class="prompt">OnkarGarg@portfolio:~$</span>
                 <span class="input">cat contact.txt</span>
             </div>
             <div class="output">
-                <p>Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-                <p>LinkedIn: <a href="https://www.linkedin.com/in/yourprofile" target="_blank">linkedin.com/in/yourprofile</a></p>
-                <p>GitHub: <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a></p>
+                <p>Email: <a href="mailto:onkargarg6@example.com">onkargarg6@example.com</a></p>
+                <p>LinkedIn: <a href="https://www.linkedin.com/in/onkar-garg-2398872b0/" target="_blank">linkedin.com/in/onkar-garg</a></p>
+                <p>GitHub: <a href="https://github.com/OnkarGarg" target="_blank">github.com/OnkarGarg</a></p>
             </div>
         </div>
     </div>
