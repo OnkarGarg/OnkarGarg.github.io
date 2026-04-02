@@ -4,299 +4,595 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Onkar Garg - AI Student</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #1e1e1e;
+            --surface: #2d2d2d;
+            --surface-2: #1b1b1b;
+            --text: #c5c5c5;
+            --muted: #9e9e9e;
+            --accent: #4caf50;
+            --accent-hover: #3a8b3e;
+            --shadow: 0 0 20px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #1e1e1e;
-            color: #c5c5c5;
-            font-family: 'Fira Mono', monospace;
+            margin: 0;
+            min-height: 100dvh;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(76, 175, 80, 0.1), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(76, 175, 80, 0.06), transparent 35%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Fira Mono", monospace;
         }
+
         .terminal {
-            background-color: #2d2d2d;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 80%;
-            max-width: 800px;
+            width: min(900px, 100%);
+            max-height: min(88dvh, 900px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: var(--surface);
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         .terminal-header {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            align-items: center;
+            gap: 12px;
         }
-        .terminal-header .buttons {
+
+        .buttons {
             display: flex;
-            gap: 5px;
+            gap: 6px;
         }
-        .terminal-header .buttons span {
-            display: block;
-            width: 12px;
-            height: 12px;
+
+        .buttons button {
+            width: 13px;
+            height: 13px;
             border-radius: 50%;
+            border: 0;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s ease;
         }
-        .terminal-header .buttons .close {
+
+        .buttons button:hover {
+            transform: scale(1.08);
+        }
+
+        .close {
             background-color: #ff5f56;
         }
-        .terminal-header .buttons .minimize {
+
+        .minimize {
             background-color: #ffbd2e;
         }
-        .terminal-header .buttons .maximize {
+
+        .maximize {
             background-color: #27c93f;
         }
-        .terminal-header .title {
-            flex-grow: 1;
+
+        .title {
+            flex: 1;
             text-align: center;
-            color: #c5c5c5;
             font-size: 14px;
+            color: var(--muted);
+            padding-right: 36px;
         }
+
         .terminal-body {
-            transition: opacity 0.3s ease;
-            background-color: #1e1e1e;
+            background-color: var(--surface-2);
+            border-radius: 8px;
             padding: 20px;
-            border-radius: 5px;
-            color: #c5c5c5;
             font-size: 16px;
-            line-height: 1.5;
-        }
-        .terminal-body .command {
-            display: flex;
-        }
-        .terminal-body .command .prompt {
-            color: #4caf50;
-            margin-right: 10px;
-        }
-        .terminal-body .command .input {
-            color: #c5c5c5;
-        }
-        .terminal-body .output {
-            margin-left: 20px;
-            color: #c5c5c5;
-        }
-        a {
-            color: #4caf50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
+            line-height: 1.55;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #555 #2d2d2d;
+            transition: opacity 0.25s ease;
+            scroll-behavior: smooth;
         }
 
-        .terminal-body {
-            max-height: 70vh;
-            overflow-y: auto; /* Enable vertical scrolling */
-            scrollbar-width: thin; /* Optional: customize scrollbar for Firefox */
-            scrollbar-color: #555 #2d2d2d; /* Optional: customize scrollbar colors */
+        .terminal-body.is-fading {
+            opacity: 0;
         }
 
-        /* Optional: Hide default scrollbar and style it for WebKit browsers (Chrome, Edge, Safari) */
         .terminal-body::-webkit-scrollbar {
             width: 8px;
         }
+
         .terminal-body::-webkit-scrollbar-thumb {
             background: #555;
             border-radius: 4px;
         }
+
         .terminal-body::-webkit-scrollbar-track {
             background: #2d2d2d;
+        }
+
+        .line {
+            animation: line-in 220ms ease both;
+        }
+
+        .command {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .prompt {
+            color: var(--accent);
+        }
+
+        .output {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .output ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .output p {
+            margin: 0 0 8px;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 0.92em;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .pill-link {
+            border: 1px solid rgba(76, 175, 80, 0.45);
+            color: var(--accent);
+            text-decoration: none;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.9em;
+        }
+
+        .pill-link:hover,
+        .pill-link:focus-visible {
+            text-decoration: none;
+            background: rgba(76, 175, 80, 0.14);
+            outline: none;
+        }
+
+        .item-button {
+            color: var(--accent);
+            background: transparent;
+            border: 0;
+            padding: 0;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .item-button:hover,
+        .item-button:focus-visible {
+            text-decoration: underline;
+            outline: none;
+        }
+
+        .output a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .output a:hover,
+        .output a:focus-visible {
+            text-decoration: underline;
+            outline: none;
         }
 
         #scrollToTop {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
-            background-color: #4caf4f4d;
-            color: #1e1e1e;
-            border: none;
-            border-radius: 50%; 
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            width: 48px;
+            height: 48px;
+            border: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
             cursor: pointer;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            z-index: 1000;
-            transition: background-color 0.3s, transform 0.3s;
+            color: #142214;
+            background-color: rgba(76, 175, 80, 0.65);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(6px);
+            transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        #scrollToTop.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
         }
 
         #scrollToTop:hover {
-            background-color: #3a8b3e;
-            transform: scale(1.1);
+            background-color: var(--accent-hover);
         }
 
+        @keyframes line-in {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
+            body {
+                padding: 12px;
+                align-items: stretch;
+            }
+
             .terminal {
-                width: 90%;
-                padding: 15px;
+                max-height: 96dvh;
+                width: 100%;
+                border-radius: 8px;
+                padding: 12px;
             }
-            .terminal-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .terminal-header .title {
-                margin-top: 10px;
+
+            .title {
                 font-size: 12px;
+                padding-right: 0;
             }
+
             .terminal-body {
                 font-size: 14px;
+                padding: 14px;
             }
-            .command .input, .output p, .output ul {
-                word-wrap: break-word;
+
+            .command,
+            .output p,
+            .output li {
+                overflow-wrap: anywhere;
             }
-            .terminal-header .buttons span {
-                width: 16px;
-                height: 16px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .line,
+            .terminal-body,
+            #scrollToTop,
+            .buttons button {
+                animation: none;
+                transition: none;
+            }
+
+            .terminal-body {
+                scroll-behavior: auto;
             }
         }
     </style>
-    <script>
-        const initialContent = `
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">whoami</span>
-            </div>
-            <div class="output">
-                <p>Hi, I'm Onkar Garg, a first year MEng AI student passionate about machine learning and data science.</p>
-            </div>
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">ls projects</span>
-            </div>
-            <div class="output">
-                <ul>
-                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It lets the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is avaiable on Github.')">Project 1: GrocerVision</a></li>
-                    <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
-                </ul>
-            </div>
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">python future.py --help</span>
-            </div>
-            <div class="output">
-                <ul>
-                    <li><a href="#" onclick="showProject('Facial OSINT AI', 'Coming soon')">Development 1: Facial OSINT AI</a></li>
-                    <li><a href="#" onclick="showProject('Kindle', 'Coming soon')">Development 2: Kindle</a></li>
-                    <li><a href="#" onclick="showProject('Camera-based alarm', 'Coming soon')">Development 3: Camera-based alarm</a></li>
-                    <li><a href="#" onclick="showProject('Netflix data analysis', 'Coming soon')">Development 4: Netflix data analysis</a></li>
-                </ul>
-            </div>
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">cat contact.txt</span>
-            </div>
-            <div class="output">
-                <p>Email: <a href="mailto:onkargarg6@gmail.com">onkargarg6@gmail.com</a></p>
-                <p>LinkedIn: <a href="https://www.linkedin.com/in/onkar-garg-2398872b0/" target="_blank">linkedin.com/in/onkar-garg</a></p>
-                <p>GitHub: <a href="https://github.com/OnkarGarg" target="_blank">github.com/OnkarGarg</a></p>
-            </div>
-        `;
-    
-        function resetTerminal() {
-            const terminalBody = document.querySelector('.terminal-body');
-            terminalBody.style.opacity = 0; // Start fade-out
-            setTimeout(() => {
-                terminalBody.innerHTML = initialContent; // Reset content
-                terminalBody.style.opacity = 1; // Fade-in
-            }, 300); // Match the transition duration
-        }
-
-        function showProject(name, description) {
-            const terminalBody = document.querySelector('.terminal-body');
-            const projectOutput = `
-                <div class="command">
-                    <span class="prompt">OnkarGarg@portfolio:~$</span>
-                    <span class="input">view ${name}</span>
-                </div>
-                <div class="output">
-                    <p>${description}</p>
-                </div>`;
-            terminalBody.innerHTML += projectOutput;
-            
-            // Scroll to the bottom to show the latest content
-            terminalBody.scrollTop = terminalBody.scrollHeight;
-        }
-
-                document.addEventListener('DOMContentLoaded', () => {
-            const scrollToTopBtn = document.getElementById('scrollToTop');
-            const terminalBody = document.querySelector('.terminal-body');
-
-            // Show/hide the button when scrolling
-            terminalBody.addEventListener('scroll', () => {
-                if (terminalBody.scrollTop > 100) {
-                    scrollToTopBtn.style.display = 'flex'; // Show the button
-                } else {
-                    scrollToTopBtn.style.display = 'none'; // Hide the button
-                }
-            });
-
-            // Scroll smoothly to the top
-            scrollToTopBtn.addEventListener('click', () => {
-                terminalBody.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                });
-            });
-        });
-    </script>
 </head>
 <body>
-    <div class="terminal">
+    <div class="terminal" aria-label="terminal portfolio">
         <div class="terminal-header">
-            <div class="buttons">
-                <span class="close" onclick="resetTerminal()"></span>
-                <span class="minimize"></span>
-                <span class="maximize"></span>
+            <div class="buttons" aria-label="window controls">
+                <button class="close" id="resetTerminal" type="button" aria-label="Reset terminal"></button>
+                <button class="minimize" type="button" aria-label="Decorative minimize button"></button>
+                <button class="maximize" type="button" aria-label="Decorative maximize button"></button>
             </div>
             <div class="title">OnkarGarg@portfolio: ~</div>
         </div>
-        <div class="terminal-body">
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">whoami</span>
-            </div>
-            <div class="output">
-                <p>Hi, I'm Onkar Garg, a first year MEng AI student passionate about machine learning and data science.</p>
-            </div>
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">ls projects</span>
-            </div>
-            <div class="output">
-                <ul>
-                    <li><a href="#" onclick="showProject('GrocerVision', 'This is an app that creates a seamless grocery shopping experience for university students (like me!). It lets the user input a grocery list that consists of everything they want in their fridge. The user can then just take an image of their fridge and the AI will process the image and the provided list to inform the user what they need to buy. The project is available on Github.')">Project 1: GrocerVision</a></li>
-                    <li><a href="#" onclick="showProject('Maze Runner', 'This a maze runner that was made as the semester one python programming coursework. The maze runner had to solve the maze with MicroMouse level information about its environment. This project had two versions, one that used the left-hug algorithm while the other utilized a modified floodfill algorithm with euclidian heuristics.')">Project 2: Maze Runner</a></li>
-                    <li><a href="#" onclick="showProject('LearnNorsk', 'This is a simple project to aid people to learn basic Norwegian, focusing on pronunciation and translation. The user is provided with two modes; one where the sentence is provided in Norwegian and they have to say it out loud and 2 where they are given an English sentence that they have to translate and say out loud. This project leverages the python SpeechRecognition, gTTS, and pygame libraries to provide the required functionalities. The project is available in Github and is being actively worked on.')">Project 3: LearnNorsk</a></li>
-                </ul>
-            </div>
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">python future.py --help</span>
-            </div>
-            <div class="output">
-                <ul>
-                    <li><a href="#" onclick="showProject('Facial OSINT AI', 'Coming soon')">Development 1: Facial OSINT AI</a></li>
-                    <li><a href="#" onclick="showProject('Kindle', 'Coming soon')">Development 2: Kindle</a></li>
-                    <li><a href="#" onclick="showProject('Camera-based alarm', 'Coming soon')">Development 3: Camera-based alarm</a></li>
-                    <li><a href="#" onclick="showProject('Netflix data analysis', 'Coming soon')">Development 4: Netflix data analysis</a></li>
-                </ul>
-            </div>
-            <div class="command">
-                <span class="prompt">OnkarGarg@portfolio:~$</span>
-                <span class="input">cat contact.txt</span>
-            </div>
-            <div class="output">
-                <p>Email: <a href="mailto:onkargarg6@gmail.com">onkargarg6@gmail.com</a></p>
-                <p>LinkedIn: <a href="https://www.linkedin.com/in/onkar-garg-2398872b0/" target="_blank">linkedin.com/in/onkar-garg</a></p>
-                <p>GitHub: <a href="https://github.com/OnkarGarg" target="_blank">github.com/OnkarGarg</a></p>
-            </div>
-        </div>
+        <div class="terminal-body" id="terminalBody"></div>
     </div>
-    <button id="scrollToTop" onclick="scrollToTop()">⬆</button>
+
+    <button id="scrollToTop" type="button" aria-label="Scroll terminal to top">&#8593;</button>
+
+    <script>
+        const intro = {
+            about: "I am Onkar Garg, a first-year MEng AI student focused on practical machine learning and data-driven products.",
+            recruiterSnapshot: [
+                "Current focus: Applied AI, computer vision, and speech-powered tools.",
+                "Strengths: Python, ML prototyping, experimentation, and clear communication.",
+                "Actively building projects with real user use-cases and iterative improvements.",
+                "Open to internships and collaborative student/early-career opportunities."
+            ],
+            projects: [
+                {
+                    name: "GrocerVision",
+                    oneLiner: "Computer vision assistant that compares a planned grocery list with fridge inventory.",
+                    description: "Built to reduce unnecessary grocery trips for students. The app compares a target grocery list with fridge contents from an uploaded image and recommends exactly what is missing.",
+                    skills: ["Python", "Computer Vision", "ML"],
+                    status: "Prototype complete, improving model reliability.",
+                    link: "https://github.com/OnkarGarg"
+                },
+                {
+                    name: "Maze Runner",
+                    oneLiner: "Autonomous maze-solving agent with two navigation strategies and heuristic optimization.",
+                    description: "Coursework project implementing both left-wall-hugging and a modified floodfill approach with Euclidean heuristics to improve route quality under partial-environment information.",
+                    skills: ["Python", "Algorithms", "Heuristics"],
+                    status: "Completed coursework project.",
+                    link: "https://github.com/OnkarGarg"
+                },
+                {
+                    name: "LearnNorsk",
+                    oneLiner: "Language-learning assistant focused on speaking practice and translation feedback.",
+                    description: "Supports two speaking modes: pronunciation and translation. Uses SpeechRecognition, gTTS, and pygame to create a simple but engaging feedback loop for beginners.",
+                    skills: ["Python", "SpeechRecognition", "gTTS", "pygame"],
+                    status: "Actively improving user flow and accuracy.",
+                    link: "https://github.com/OnkarGarg"
+                }
+            ],
+            future: [
+                { name: "Facial OSINT AI", description: "Concept stage: ethical research tooling and face-matching workflows." },
+                { name: "Kindle", description: "Concept stage: AI-enhanced reading and note intelligence." },
+                { name: "Camera-based alarm", description: "Concept stage: event-triggered visual alert system." },
+                { name: "Netflix data analysis", description: "Concept stage: recommendation patterns and audience trend analysis." }
+            ],
+            contact: {
+                email: "onkargarg6@gmail.com",
+                linkedin: "https://www.linkedin.com/in/onkar-garg-2398872b0/",
+                github: "https://github.com/OnkarGarg"
+            }
+        };
+
+        const state = {
+            viewed: new Set()
+        };
+
+        const terminalBody = document.getElementById("terminalBody");
+        const scrollToTopBtn = document.getElementById("scrollToTop");
+        const resetBtn = document.getElementById("resetTerminal");
+
+        function createLineCommand(inputText) {
+            const command = document.createElement("div");
+            command.className = "command line";
+
+            const prompt = document.createElement("span");
+            prompt.className = "prompt";
+            prompt.textContent = "OnkarGarg@portfolio:~$";
+
+            const input = document.createElement("span");
+            input.className = "input";
+            input.textContent = inputText;
+
+            command.append(prompt, input);
+            return command;
+        }
+
+        function createOutputNode(contentNode) {
+            const output = document.createElement("div");
+            output.className = "output line";
+            output.appendChild(contentNode);
+            return output;
+        }
+
+        function createProfileOutput() {
+            const p = document.createElement("p");
+            p.textContent = intro.about;
+            return createOutputNode(p);
+        }
+
+        function createRecruiterSnapshotOutput() {
+            const wrapper = document.createElement("div");
+            const ul = document.createElement("ul");
+
+            intro.recruiterSnapshot.forEach((line) => {
+                const li = document.createElement("li");
+                li.textContent = line;
+                ul.appendChild(li);
+            });
+
+            const hint = document.createElement("p");
+            hint.className = "hint";
+            hint.textContent = "Tip: Click any project below to view details, skills used, and project status.";
+
+            wrapper.append(ul, hint);
+            return createOutputNode(wrapper);
+        }
+
+        function createInteractiveList(items, prefix, type) {
+            const ul = document.createElement("ul");
+
+            items.forEach((item, index) => {
+                const li = document.createElement("li");
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "item-button";
+                button.dataset.action = "show-item";
+                button.dataset.itemType = type;
+                button.dataset.itemName = item.name;
+                button.textContent = `${prefix} ${index + 1}: ${item.name}`;
+                li.appendChild(button);
+
+                if (item.oneLiner) {
+                    const summary = document.createElement("span");
+                    summary.className = "hint";
+                    summary.textContent = ` - ${item.oneLiner}`;
+                    li.appendChild(summary);
+                }
+
+                ul.appendChild(li);
+            });
+
+            return createOutputNode(ul);
+        }
+
+        function createContactOutput() {
+            const wrapper = document.createElement("div");
+            const email = document.createElement("p");
+            const linkedin = document.createElement("p");
+            const github = document.createElement("p");
+            const quickLinks = document.createElement("div");
+
+            email.innerHTML = `Email: <a href="mailto:${intro.contact.email}">${intro.contact.email}</a>`;
+            linkedin.innerHTML = `LinkedIn: <a href="${intro.contact.linkedin}" target="_blank" rel="noopener noreferrer">linkedin.com/in/onkar-garg</a>`;
+            github.innerHTML = `GitHub: <a href="${intro.contact.github}" target="_blank" rel="noopener noreferrer">github.com/OnkarGarg</a>`;
+
+            quickLinks.className = "quick-links";
+            quickLinks.innerHTML = `
+                <a class="pill-link" href="${intro.contact.linkedin}" target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
+                <a class="pill-link" href="${intro.contact.github}" target="_blank" rel="noopener noreferrer">Open GitHub</a>
+                <a class="pill-link" href="mailto:${intro.contact.email}">Email Me</a>
+            `;
+
+            wrapper.append(email, linkedin, github, quickLinks);
+            return createOutputNode(wrapper);
+        }
+
+        function buildInitialTranscript() {
+            const fragment = document.createDocumentFragment();
+
+            fragment.append(
+                createLineCommand("whoami"),
+                createProfileOutput(),
+                createLineCommand("cat recruiter_snapshot.txt"),
+                createRecruiterSnapshotOutput(),
+                createLineCommand("ls projects"),
+                createInteractiveList(intro.projects, "Project", "project"),
+                createLineCommand("python future.py --help"),
+                createInteractiveList(intro.future, "Development", "future"),
+                createLineCommand("cat contact.txt"),
+                createContactOutput()
+            );
+
+            return fragment;
+        }
+
+        function getItemByName(type, name) {
+            const source = type === "future" ? intro.future : intro.projects;
+            return source.find((item) => item.name === name);
+        }
+
+        function appendProjectView(name, description) {
+            const key = `${name}:${description}`;
+            if (state.viewed.has(key)) {
+                return;
+            }
+
+            const details = getItemByName("project", name) || getItemByName("future", name);
+            const wrapper = document.createElement("div");
+            const descriptionP = document.createElement("p");
+            descriptionP.textContent = description;
+
+            wrapper.appendChild(descriptionP);
+
+            if (details && details.skills) {
+                const skillsP = document.createElement("p");
+                skillsP.className = "hint";
+                skillsP.textContent = `Skills: ${details.skills.join(", ")}`;
+                wrapper.appendChild(skillsP);
+            }
+
+            if (details && details.status) {
+                const statusP = document.createElement("p");
+                statusP.className = "hint";
+                statusP.textContent = `Status: ${details.status}`;
+                wrapper.appendChild(statusP);
+            }
+
+            if (details && details.link) {
+                const links = document.createElement("div");
+                links.className = "quick-links";
+
+                const link = document.createElement("a");
+                link.href = details.link;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.className = "pill-link";
+                link.textContent = `Open ${name} on GitHub`;
+
+                links.appendChild(link);
+                wrapper.appendChild(links);
+            }
+
+            terminalBody.append(
+                createLineCommand(`view ${name}`),
+                createOutputNode(wrapper)
+            );
+
+            state.viewed.add(key);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        function resetTerminal() {
+            terminalBody.classList.add("is-fading");
+
+            window.setTimeout(() => {
+                terminalBody.replaceChildren(buildInitialTranscript());
+                state.viewed.clear();
+                terminalBody.scrollTop = 0;
+                terminalBody.classList.remove("is-fading");
+                syncScrollButton();
+            }, 180);
+        }
+
+        function syncScrollButton() {
+            const shouldShow = terminalBody.scrollTop > 100;
+            scrollToTopBtn.classList.toggle("is-visible", shouldShow);
+        }
+
+        function handleBodyClick(event) {
+            const target = event.target.closest("[data-action='show-item']");
+            if (!target) {
+                return;
+            }
+
+            const { itemType, itemName } = target.dataset;
+            const item = getItemByName(itemType, itemName);
+            if (!item) {
+                return;
+            }
+
+            appendProjectView(item.name, item.description);
+        }
+
+        function init() {
+            terminalBody.replaceChildren(buildInitialTranscript());
+            terminalBody.addEventListener("click", handleBodyClick);
+            terminalBody.addEventListener("scroll", syncScrollButton);
+
+            scrollToTopBtn.addEventListener("click", () => {
+                terminalBody.scrollTo({ top: 0, behavior: "smooth" });
+            });
+
+            resetBtn.addEventListener("click", resetTerminal);
+
+            // Keyboard helpers for terminal-like ergonomics.
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") {
+                    resetTerminal();
+                }
+
+                if (event.key === "Home") {
+                    terminalBody.scrollTo({ top: 0, behavior: "smooth" });
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", init);
+    </script>
 </body>
 </html>
