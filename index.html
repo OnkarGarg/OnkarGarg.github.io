@@ -1,644 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onkar Garg - AI Student</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #1e1e1e;
-            --surface: #2d2d2d;
-            --surface-2: #1b1b1b;
-            --text: #c5c5c5;
-            --muted: #9e9e9e;
-            --accent: #4caf50;
-            --accent-hover: #3a8b3e;
-            --shadow: 0 0 20px rgba(0, 0, 0, 0.45);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100dvh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background:
-                radial-gradient(circle at 20% 0%, rgba(76, 175, 80, 0.1), transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(76, 175, 80, 0.06), transparent 35%),
-                var(--bg);
-            color: var(--text);
-            font-family: "Fira Mono", monospace;
-        }
-
-        .terminal {
-            width: min(900px, 100%);
-            max-height: min(88dvh, 900px);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background-color: var(--surface);
-            padding: 16px;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .terminal-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 6px;
-        }
-
-        .buttons button {
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            border: 0;
-            cursor: pointer;
-            padding: 0;
-            transition: transform 0.2s ease;
-        }
-
-        .buttons button:hover {
-            transform: scale(1.08);
-        }
-
-        .close {
-            background-color: #ff5f56;
-        }
-
-        .minimize {
-            background-color: #ffbd2e;
-        }
-
-        .maximize {
-            background-color: #27c93f;
-        }
-
-        .title {
-            flex: 1;
-            text-align: center;
-            font-size: 14px;
-            color: var(--muted);
-            padding-right: 36px;
-        }
-
-        .terminal-body {
-            background-color: var(--surface-2);
-            border-radius: 8px;
-            padding: 20px;
-            font-size: 16px;
-            line-height: 1.55;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #555 #2d2d2d;
-            transition: opacity 0.25s ease;
-            scroll-behavior: smooth;
-        }
-
-        .terminal-body.is-fading {
-            opacity: 0;
-        }
-
-        .terminal-body::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .terminal-body::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 4px;
-        }
-
-        .terminal-body::-webkit-scrollbar-track {
-            background: #2d2d2d;
-        }
-
-        .line {
-            animation: line-in 220ms ease both;
-        }
-
-        .command {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .prompt {
-            color: var(--accent);
-        }
-
-        .output {
-            margin-left: 20px;
-            margin-bottom: 10px;
-        }
-
-        .output ul {
-            margin: 0;
-            padding-left: 18px;
-        }
-
-        .output p {
-            margin: 0 0 8px;
-        }
-
-        .hint {
-            color: var(--muted);
-            font-size: 0.92em;
-        }
-
-        .quick-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .pill-link {
-            border: 1px solid rgba(76, 175, 80, 0.45);
-            color: var(--accent);
-            text-decoration: none;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 0.9em;
-        }
-
-        .pill-link:hover,
-        .pill-link:focus-visible {
-            text-decoration: none;
-            background: rgba(76, 175, 80, 0.14);
-            outline: none;
-        }
-
-        .item-button {
-            color: var(--accent);
-            background: transparent;
-            border: 0;
-            padding: 0;
-            font: inherit;
-            text-align: left;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .item-button:hover,
-        .item-button:focus-visible {
-            text-decoration: underline;
-            outline: none;
-        }
-
-        .output a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        .output a:hover,
-        .output a:focus-visible {
-            text-decoration: underline;
-            outline: none;
-        }
-
-        #scrollToTop {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 48px;
-            height: 48px;
-            border: 0;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            font-size: 18px;
-            cursor: pointer;
-            color: #142214;
-            background-color: rgba(76, 175, 80, 0.65);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(6px);
-            transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        #scrollToTop.is-visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-
-        #scrollToTop:hover {
-            background-color: var(--accent-hover);
-        }
-
-        @keyframes line-in {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 700px) {
-            body {
-                padding: 12px;
-                align-items: stretch;
-            }
-
-            .terminal {
-                max-height: 96dvh;
-                width: 100%;
-                border-radius: 8px;
-                padding: 12px;
-            }
-
-            .title {
-                font-size: 12px;
-                padding-right: 0;
-            }
-
-            .terminal-body {
-                font-size: 14px;
-                padding: 14px;
-            }
-
-            .command,
-            .output p,
-            .output li {
-                overflow-wrap: anywhere;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .line,
-            .terminal-body,
-            #scrollToTop,
-            .buttons button {
-                animation: none;
-                transition: none;
-            }
-
-            .terminal-body {
-                scroll-behavior: auto;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="terminal" aria-label="terminal portfolio">
-        <div class="terminal-header">
-            <div class="buttons" aria-label="window controls">
-                <button class="close" id="resetTerminal" type="button" aria-label="Reset terminal"></button>
-                <button class="minimize" type="button" aria-label="Decorative minimize button"></button>
-                <button class="maximize" type="button" aria-label="Decorative maximize button"></button>
-            </div>
-            <div class="title">OnkarGarg@portfolio: ~</div>
-        </div>
-        <div class="terminal-body" id="terminalBody"></div>
-    </div>
-
-    <button id="scrollToTop" type="button" aria-label="Scroll terminal to top">&#8593;</button>
-
-    <script>
-        const ANALYTICS = {
-            provider: "ga4",
-            measurementId: "G-LHVY71K2CP"
-        };
-
-        const intro = {
-            about: "I am Onkar Garg, a first-year MEng AI student focused on practical machine learning and data-driven products.",
-            recruiterSnapshot: [
-                "Current focus: Applied AI, computer vision, and speech-powered tools.",
-                "Strengths: Python, ML prototyping, experimentation, and clear communication.",
-                "Actively building projects with real user use-cases and iterative improvements.",
-                "Open to internships and collaborative student/early-career opportunities."
-            ],
-            projects: [
-                {
-                    name: "GrocerVision",
-                    oneLiner: "Computer vision assistant that compares a planned grocery list with fridge inventory.",
-                    description: "Built to reduce unnecessary grocery trips for students. The app compares a target grocery list with fridge contents from an uploaded image and recommends exactly what is missing.",
-                    skills: ["Python", "Computer Vision", "ML"],
-                    status: "Prototype complete, improving model reliability.",
-                    link: "https://github.com/OnkarGarg"
-                },
-                {
-                    name: "Maze Runner",
-                    oneLiner: "Autonomous maze-solving agent with two navigation strategies and heuristic optimization.",
-                    description: "Coursework project implementing both left-wall-hugging and a modified floodfill approach with Euclidean heuristics to improve route quality under partial-environment information.",
-                    skills: ["Python", "Algorithms", "Heuristics"],
-                    status: "Completed coursework project.",
-                    link: "https://github.com/OnkarGarg"
-                },
-                {
-                    name: "LearnNorsk",
-                    oneLiner: "Language-learning assistant focused on speaking practice and translation feedback.",
-                    description: "Supports two speaking modes: pronunciation and translation. Uses SpeechRecognition, gTTS, and pygame to create a simple but engaging feedback loop for beginners.",
-                    skills: ["Python", "SpeechRecognition", "gTTS", "pygame"],
-                    status: "Actively improving user flow and accuracy.",
-                    link: "https://github.com/OnkarGarg"
-                }
-            ],
-            future: [
-                { name: "Facial OSINT AI", description: "Concept stage: ethical research tooling and face-matching workflows." },
-                { name: "Kindle", description: "Concept stage: AI-enhanced reading and note intelligence." },
-                { name: "Camera-based alarm", description: "Concept stage: event-triggered visual alert system." },
-                { name: "Netflix data analysis", description: "Concept stage: recommendation patterns and audience trend analysis." }
-            ],
-            contact: {
-                email: "onkargarg6@gmail.com",
-                linkedin: "https://www.linkedin.com/in/onkar-garg-2398872b0/",
-                github: "https://github.com/OnkarGarg"
-            }
-        };
-
-        const state = {
-            viewed: new Set()
-        };
-
-        const terminalBody = document.getElementById("terminalBody");
-        const scrollToTopBtn = document.getElementById("scrollToTop");
-        const resetBtn = document.getElementById("resetTerminal");
-
-        function setupAnalytics() {
-            if (ANALYTICS.provider !== "ga4" || !ANALYTICS.measurementId) {
-                return;
-            }
-
-            const script = document.createElement("script");
-            script.async = true;
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.measurementId}`;
-            document.head.appendChild(script);
-
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = function gtag() {
-                window.dataLayer.push(arguments);
-            };
-
-            window.gtag("js", new Date());
-            window.gtag("config", ANALYTICS.measurementId, { anonymize_ip: true });
-        }
-
-        function trackEvent(eventName, params = {}) {
-            if (typeof window.gtag !== "function") {
-                return;
-            }
-
-            window.gtag("event", eventName, params);
-        }
-
-        function createLineCommand(inputText) {
-            const command = document.createElement("div");
-            command.className = "command line";
-
-            const prompt = document.createElement("span");
-            prompt.className = "prompt";
-            prompt.textContent = "OnkarGarg@portfolio:~$";
-
-            const input = document.createElement("span");
-            input.className = "input";
-            input.textContent = inputText;
-
-            command.append(prompt, input);
-            return command;
-        }
-
-        function createOutputNode(contentNode) {
-            const output = document.createElement("div");
-            output.className = "output line";
-            output.appendChild(contentNode);
-            return output;
-        }
-
-        function createProfileOutput() {
-            const p = document.createElement("p");
-            p.textContent = intro.about;
-            return createOutputNode(p);
-        }
-
-        function createRecruiterSnapshotOutput() {
-            const wrapper = document.createElement("div");
-            const ul = document.createElement("ul");
-
-            intro.recruiterSnapshot.forEach((line) => {
-                const li = document.createElement("li");
-                li.textContent = line;
-                ul.appendChild(li);
-            });
-
-            const hint = document.createElement("p");
-            hint.className = "hint";
-            hint.textContent = "Tip: Click any project below to view details, skills used, and project status.";
-
-            wrapper.append(ul, hint);
-            return createOutputNode(wrapper);
-        }
-
-        function createInteractiveList(items, prefix, type) {
-            const ul = document.createElement("ul");
-
-            items.forEach((item, index) => {
-                const li = document.createElement("li");
-                const button = document.createElement("button");
-                button.type = "button";
-                button.className = "item-button";
-                button.dataset.action = "show-item";
-                button.dataset.itemType = type;
-                button.dataset.itemName = item.name;
-                button.textContent = `${prefix} ${index + 1}: ${item.name}`;
-                li.appendChild(button);
-
-                if (item.oneLiner) {
-                    const summary = document.createElement("span");
-                    summary.className = "hint";
-                    summary.textContent = ` - ${item.oneLiner}`;
-                    li.appendChild(summary);
-                }
-
-                ul.appendChild(li);
-            });
-
-            return createOutputNode(ul);
-        }
-
-        function createContactOutput() {
-            const wrapper = document.createElement("div");
-            const email = document.createElement("p");
-            const linkedin = document.createElement("p");
-            const github = document.createElement("p");
-            const quickLinks = document.createElement("div");
-
-            email.innerHTML = `Email: <a href="mailto:${intro.contact.email}">${intro.contact.email}</a>`;
-            linkedin.innerHTML = `LinkedIn: <a href="${intro.contact.linkedin}" target="_blank" rel="noopener noreferrer">linkedin.com/in/onkar-garg</a>`;
-            github.innerHTML = `GitHub: <a href="${intro.contact.github}" target="_blank" rel="noopener noreferrer">github.com/OnkarGarg</a>`;
-
-            quickLinks.className = "quick-links";
-            quickLinks.innerHTML = `
-                <a class="pill-link" href="${intro.contact.linkedin}" target="_blank" rel="noopener noreferrer" data-track="contact_click" data-label="linkedin">Open LinkedIn</a>
-                <a class="pill-link" href="${intro.contact.github}" target="_blank" rel="noopener noreferrer" data-track="contact_click" data-label="github">Open GitHub</a>
-                <a class="pill-link" href="mailto:${intro.contact.email}" data-track="contact_click" data-label="email">Email Me</a>
-            `;
-
-            wrapper.append(email, linkedin, github, quickLinks);
-            return createOutputNode(wrapper);
-        }
-
-        function buildInitialTranscript() {
-            const fragment = document.createDocumentFragment();
-
-            fragment.append(
-                createLineCommand("whoami"),
-                createProfileOutput(),
-                createLineCommand("cat recruiter_snapshot.txt"),
-                createRecruiterSnapshotOutput(),
-                createLineCommand("ls projects"),
-                createInteractiveList(intro.projects, "Project", "project"),
-                createLineCommand("python future.py --help"),
-                createInteractiveList(intro.future, "Development", "future"),
-                createLineCommand("cat contact.txt"),
-                createContactOutput()
-            );
-
-            return fragment;
-        }
-
-        function getItemByName(type, name) {
-            const source = type === "future" ? intro.future : intro.projects;
-            return source.find((item) => item.name === name);
-        }
-
-        function appendProjectView(name, description) {
-            const key = `${name}:${description}`;
-            if (state.viewed.has(key)) {
-                return;
-            }
-
-            const details = getItemByName("project", name) || getItemByName("future", name);
-            const wrapper = document.createElement("div");
-            const descriptionP = document.createElement("p");
-            descriptionP.textContent = description;
-
-            wrapper.appendChild(descriptionP);
-
-            if (details && details.skills) {
-                const skillsP = document.createElement("p");
-                skillsP.className = "hint";
-                skillsP.textContent = `Skills: ${details.skills.join(", ")}`;
-                wrapper.appendChild(skillsP);
-            }
-
-            if (details && details.status) {
-                const statusP = document.createElement("p");
-                statusP.className = "hint";
-                statusP.textContent = `Status: ${details.status}`;
-                wrapper.appendChild(statusP);
-            }
-
-            if (details && details.link) {
-                const links = document.createElement("div");
-                links.className = "quick-links";
-
-                const link = document.createElement("a");
-                link.href = details.link;
-                link.target = "_blank";
-                link.rel = "noopener noreferrer";
-                link.className = "pill-link";
-                link.textContent = `Open ${name} on GitHub`;
-
-                links.appendChild(link);
-                wrapper.appendChild(links);
-            }
-
-            terminalBody.append(
-                createLineCommand(`view ${name}`),
-                createOutputNode(wrapper)
-            );
-
-            state.viewed.add(key);
-            trackEvent("project_view", { project_name: name });
-            terminalBody.scrollTop = terminalBody.scrollHeight;
-        }
-
-        function resetTerminal() {
-            terminalBody.classList.add("is-fading");
-            trackEvent("terminal_reset");
-
-            window.setTimeout(() => {
-                terminalBody.replaceChildren(buildInitialTranscript());
-                state.viewed.clear();
-                terminalBody.scrollTop = 0;
-                terminalBody.classList.remove("is-fading");
-                syncScrollButton();
-            }, 180);
-        }
-
-        function syncScrollButton() {
-            const shouldShow = terminalBody.scrollTop > 100;
-            scrollToTopBtn.classList.toggle("is-visible", shouldShow);
-        }
-
-        function handleBodyClick(event) {
-            const target = event.target.closest("[data-action='show-item']");
-            if (!target) {
-                const trackedLink = event.target.closest("[data-track]");
-                if (trackedLink) {
-                    trackEvent(trackedLink.dataset.track, {
-                        label: trackedLink.dataset.label || "unknown"
-                    });
-                }
-                return;
-            }
-
-            const { itemType, itemName } = target.dataset;
-            const item = getItemByName(itemType, itemName);
-            if (!item) {
-                return;
-            }
-
-            appendProjectView(item.name, item.description);
-        }
-
-        function init() {
-            terminalBody.replaceChildren(buildInitialTranscript());
-            terminalBody.addEventListener("click", handleBodyClick);
-            terminalBody.addEventListener("scroll", syncScrollButton);
-
-            scrollToTopBtn.addEventListener("click", () => {
-                trackEvent("scroll_to_top_click");
-                terminalBody.scrollTo({ top: 0, behavior: "smooth" });
-            });
-
-            resetBtn.addEventListener("click", resetTerminal);
-
-            // Keyboard helpers for terminal-like ergonomics.
-            document.addEventListener("keydown", (event) => {
-                if (event.key === "Escape") {
-                    resetTerminal();
-                }
-
-                if (event.key === "Home") {
-                    terminalBody.scrollTo({ top: 0, behavior: "smooth" });
-                }
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", init);
-        setupAnalytics();
-    </script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -646,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Onkar Garg - AI Student</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Fragment+Mono&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <style>
         :root {
             --bg: #0f0f10;
@@ -706,7 +66,7 @@
             cursor: pointer;
             transition: filter 0.15s;
         }
-        .dot:hover { filter: brightness(1.2); }
+        .dot:hover { filter: brightness(1.6); }
         .dot.red   { background: #ff5f57; }
         .dot.yellow{ background: #febc2e; }
         .dot.green { background: #28c840; }
@@ -976,42 +336,6 @@
 
         .project-link:hover { background: var(--green-dim); }
 
-        /* ── Future section ── */
-        .future-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .future-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 12px 14px;
-        }
-
-        .future-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--text-dimmer);
-            margin-top: 5px;
-            flex-shrink: 0;
-        }
-
-        .future-name {
-            font-size: 12.5px;
-            color: var(--text);
-            margin-bottom: 2px;
-        }
-
-        .future-desc {
-            font-size: 11.5px;
-            color: var(--text-dim);
-        }
-
         /* ── Contact section ── */
         .contact-list {
             display: flex;
@@ -1129,16 +453,16 @@
                 <div class="sidebar-section">
                     <div class="sidebar-label">Navigation</div>
                     <button class="sidebar-item active" data-target="about">
-                        <span class="sidebar-icon">▸</span> whoami
+                        <span class="sidebar-icon">▸</span> About
                     </button>
                     <button class="sidebar-item" data-target="projects">
-                        <span class="sidebar-icon">▸</span> ls projects
+                        <span class="sidebar-icon">▸</span> Projects
                     </button>
-                    <button class="sidebar-item" data-target="future">
-                        <span class="sidebar-icon">▸</span> future.py
+                    <button class="sidebar-item" data-target="experience">
+                        <span class="sidebar-icon">▸</span> Experience
                     </button>
                     <button class="sidebar-item" data-target="contact">
-                        <span class="sidebar-icon">▸</span> contact.txt
+                        <span class="sidebar-icon">▸</span> Contact
                     </button>
                 </div>
             </nav>
@@ -1155,7 +479,7 @@
                     </div>
 
                     <p class="about-lead">
-                        I'm a first-year MEng AI student focused on practical machine learning and
+                        I'm a second-year MEng AI student focused on practical machine learning and
                         data-driven products. I like building things that are actually useful.
                     </p>
 
@@ -1170,7 +494,7 @@
                     <div class="info-grid">
                         <div class="info-card">
                             <div class="info-card-label">Status</div>
-                            <div class="info-card-value">Open to internships</div>
+                            <div class="info-card-value">Open to summer internships</div>
                         </div>
                         <div class="info-card">
                             <div class="info-card-label">Focus</div>
@@ -1198,22 +522,24 @@
                     <div class="project-grid" id="projectGrid"></div>
                 </div>
 
-                <!-- FUTURE -->
-                <div class="section" id="sec-future">
+                <!-- EXPERIENCE -->
+                <div class="section" id="sec-experience">
                     <div class="cmd-header">
                         <span class="cmd-prompt">OnkarGarg@portfolio:~$</span>
-                        <span class="cmd-text">python future.py --help</span>
+                        <span class="cmd-text">cat experience.log</span>
                         <span class="cmd-cursor"></span>
                     </div>
-
-                    <div class="future-list" id="futureList"></div>
+                    <div style="font-size:11px;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Roles</div>
+                    <div class="project-grid" id="roleGrid" style="margin-bottom:24px;"></div>
+                    <div style="font-size:11px;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Hackathons</div>
+                    <div class="project-grid" id="hackathonGrid"></div>
                 </div>
 
                 <!-- CONTACT -->
                 <div class="section" id="sec-contact">
                     <div class="cmd-header">
                         <span class="cmd-prompt">OnkarGarg@portfolio:~$</span>
-                        <span class="cmd-text">cat contact.txt</span>
+                        <span class="cmd-text">head contact.txt</span>
                         <span class="cmd-cursor"></span>
                     </div>
 
@@ -1253,7 +579,7 @@
             <div class="status-dot"></div>
             <span id="statusText">about</span>
             <span class="status-spacer"></span>
-            <span>MEng AI · Oslo, NO</span>
+            <span>MEng AI · Southampton, UK · Oslo, NO</span>
         </div>
     </div><!-- /body -->
 </div><!-- /shell -->
@@ -1262,11 +588,107 @@
     const data = {
         projects: [
             {
-                name: "GrocerVision",
-                oneLiner: "Computer vision assistant that compares a grocery list with fridge inventory.",
-                description: "Built to reduce unnecessary grocery trips for students. The app compares a target grocery list with fridge contents from an uploaded image and recommends exactly what is missing.",
-                skills: ["Python", "Computer Vision", "ML"],
-                status: "Prototype complete, improving model reliability.",
+                name: "Physics simulation for RTL circuits",
+                oneLiner: "",
+                description: "",
+                skills: ["Python"],
+                status: "",
+                link: ""
+            },
+            {
+                name: "Custom implementation of decision trees and forests",
+                oneLiner: "",
+                description: "",
+                skills: ["C++"],
+                status: "",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "Deepnet from scratch",
+                oneLiner: "",
+                description: "",
+                skills: ["Python"],
+                status: "",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "Stardew valleey inspired mini-game",
+                oneLiner: "",
+                description: "",
+                skills: ["Python"],
+                status: "",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "Personal assistant",
+                oneLiner: "",
+                description: "",
+                skills: ["Python"],
+                status: "",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "Custom CPU in SystemVerilog",
+                oneLiner: "",
+                description: "",
+                skills: ["SystemVerilog"],
+                status: "Completed coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "Portfolio optimization",
+                oneLiner: "",
+                description: "",
+                skills: ["Python", "Algorithms"],
+                status: "Completed coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "MonaBean",
+                oneLiner: "",
+                description: "",
+                skills: ["Matlab"],
+                status: "Completed coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "HPC Fashion-MNIST model optimization",
+                oneLiner: "",
+                description: "",
+                skills: ["C++", "AVX Intrinsics", "Multi-threading"],
+                status: "Completed coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "AI connect 4 bot",
+                oneLiner: "",
+                description: "",
+                skills: ["Python"],
+                status: "Completed coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "OatC compiler",
+                oneLiner: "",
+                description: "",
+                skills: ["Ocaml"],
+                status: "Ongoing coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "Johnbot",
+                oneLiner: "",
+                description: "",
+                skills: ["Python", "Simulation"],
+                status: "Ongoing coursework project.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
+                name: "robotics",
+                oneLiner: "",
+                description: "",
+                skills: ["Python", "Simulation"],
+                status: "Ongoing coursework project.",
                 link: "https://github.com/OnkarGarg"
             },
             {
@@ -1278,6 +700,14 @@
                 link: "https://github.com/OnkarGarg"
             },
             {
+                name: "GrocerVision",
+                oneLiner: "Computer vision assistant that compares a grocery list with fridge inventory.",
+                description: "Built to reduce unnecessary grocery trips for students. The app compares a target grocery list with fridge contents from an uploaded image and recommends exactly what is missing.",
+                skills: ["Python", "Computer Vision", "ML"],
+                status: "Prototype complete, improving model reliability.",
+                link: "https://github.com/OnkarGarg"
+            },
+            {
                 name: "LearnNorsk",
                 oneLiner: "Language-learning assistant focused on speaking practice and translation feedback.",
                 description: "Supports two speaking modes: pronunciation and translation. Uses SpeechRecognition, gTTS, and pygame to create a simple but engaging feedback loop for beginners.",
@@ -1286,12 +716,43 @@
                 link: "https://github.com/OnkarGarg"
             }
         ],
-        future: [
-            { name: "Facial OSINT AI",       description: "Ethical research tooling and face-matching workflows." },
-            { name: "Kindle AI",              description: "AI-enhanced reading and note intelligence." },
-            { name: "Camera-based Alarm",     description: "Event-triggered visual alert system." },
-            { name: "Netflix Data Analysis",  description: "Recommendation patterns and audience trend analysis." }
-        ]
+        experience: {
+            roles: [
+                {
+                    title: "ROLE TITLE",
+                    org: "Organisation Name",
+                    dates: "Month YYYY – Month YYYY",
+                    summary: "One sentence describing the role.",
+                    bullets: [
+                        "Responsibility or achievement one.",
+                        "Responsibility or achievement two.",
+                        "Responsibility or achievement three."
+                    ]
+                }
+            ],
+            hackathons: [
+                {
+                    name: "Hackathon Name",
+                    result: "Result / Placement",
+                    built: "What you built in one sentence."
+                },
+                {
+                    name: "Hackathon Name",
+                    result: "Result / Placement",
+                    built: "What you built in one sentence."
+                },
+                {
+                    name: "Hackathon Name",
+                    result: "Result / Placement",
+                    built: "What you built in one sentence."
+                },
+                {
+                    name: "Hackathon Name",
+                    result: "Result / Placement",
+                    built: "What you built in one sentence."
+                }
+            ]
+        }
     };
 
     // Build projects
@@ -1299,33 +760,68 @@
     data.projects.forEach(p => {
         const card = document.createElement("div");
         card.className = "project-card";
-        card.innerHTML = `
-            <div class="project-top">
-                <span class="project-name">${p.name}</span>
-                <span class="project-status">${p.status}</span>
-            </div>
-            <div class="project-one-liner">${p.oneLiner}</div>
-            <div class="project-tags">${p.skills.map(s => `<span class="tag">${s}</span>`).join("")}</div>
-            <div class="project-detail">
-                <p>${p.description}</p>
-                <a class="project-link" href="${p.link}" target="_blank" rel="noopener noreferrer">↗ View on GitHub</a>
-            </div>`;
+        console.log(p.link);
+        console.log(p.link == "");
+        if (p.link == ""){
+            card.innerHTML = `
+                <div class="project-top">
+                    <span class="project-name">${p.name}</span>
+                    <span class="project-status">${p.status}</span>
+                </div>
+                <div class="project-one-liner">${p.oneLiner}</div>
+                <div class="project-tags">${p.skills.map(s => `<span class="tag">${s}</span>`).join("")}</div>
+                <div class="project-detail">
+                    <p>${p.description}</p>
+                </div>`;
+        } else {
+            card.innerHTML = `
+                <div class="project-top">
+                    <span class="project-name">${p.name}</span>
+                    <span class="project-status">${p.status}</span>
+                </div>
+                <div class="project-one-liner">${p.oneLiner}</div>
+                <div class="project-tags">${p.skills.map(s => `<span class="tag">${s}</span>`).join("")}</div>
+                <div class="project-detail">
+                    <p>${p.description}</p>
+                    <a class="project-link" href="${p.link}" target="_blank" rel="noopener noreferrer">↗ View on GitHub</a>
+                </div>`;
+        }
+
         card.addEventListener("click", () => card.classList.toggle("expanded"));
         projectGrid.appendChild(card);
     });
 
-    // Build future
-    const futureList = document.getElementById("futureList");
-    data.future.forEach(f => {
-        const item = document.createElement("div");
-        item.className = "future-item";
-        item.innerHTML = `
-            <div class="future-dot"></div>
-            <div>
-                <div class="future-name">${f.name}</div>
-                <div class="future-desc">${f.description}</div>
+    // Build roles
+    const roleGrid = document.getElementById("roleGrid");
+    data.experience.roles.forEach(r => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+        card.style.cursor = "default";
+        card.innerHTML = `
+            <div class="project-top">
+                <span class="project-name">${r.title} — ${r.org}</span>
+                <span class="project-status">${r.dates}</span>
+            </div>
+            <div class="project-one-liner">${r.summary}</div>
+            <div class="project-detail" style="display:block;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+                ${r.bullets.map(b => `<p>→ ${b}</p>`).join("")}
             </div>`;
-        futureList.appendChild(item);
+        roleGrid.appendChild(card);
+    });
+
+    // Build hackathons
+    const hackathonGrid = document.getElementById("hackathonGrid");
+    data.experience.hackathons.forEach(h => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+        card.style.cursor = "default";
+        card.innerHTML = `
+            <div class="project-top">
+                <span class="project-name">${h.name}</span>
+                <span class="project-status">${h.result}</span>
+            </div>
+            <div class="project-one-liner">${h.built}</div>`;
+        hackathonGrid.appendChild(card);
     });
 
     // Navigation
