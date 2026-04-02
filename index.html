@@ -311,6 +311,11 @@
     <button id="scrollToTop" type="button" aria-label="Scroll terminal to top">&#8593;</button>
 
     <script>
+        const ANALYTICS = {
+            provider: "ga4",
+            measurementId: "G-LHVY71K2CP"
+        };
+
         const intro = {
             about: "I am Onkar Garg, a first-year MEng AI student focused on practical machine learning and data-driven products.",
             recruiterSnapshot: [
@@ -365,6 +370,33 @@
         const terminalBody = document.getElementById("terminalBody");
         const scrollToTopBtn = document.getElementById("scrollToTop");
         const resetBtn = document.getElementById("resetTerminal");
+
+        function setupAnalytics() {
+            if (ANALYTICS.provider !== "ga4" || !ANALYTICS.measurementId) {
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.measurementId}`;
+            document.head.appendChild(script);
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function gtag() {
+                window.dataLayer.push(arguments);
+            };
+
+            window.gtag("js", new Date());
+            window.gtag("config", ANALYTICS.measurementId, { anonymize_ip: true });
+        }
+
+        function trackEvent(eventName, params = {}) {
+            if (typeof window.gtag !== "function") {
+                return;
+            }
+
+            window.gtag("event", eventName, params);
+        }
 
         function createLineCommand(inputText) {
             const command = document.createElement("div");
@@ -453,9 +485,9 @@
 
             quickLinks.className = "quick-links";
             quickLinks.innerHTML = `
-                <a class="pill-link" href="${intro.contact.linkedin}" target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
-                <a class="pill-link" href="${intro.contact.github}" target="_blank" rel="noopener noreferrer">Open GitHub</a>
-                <a class="pill-link" href="mailto:${intro.contact.email}">Email Me</a>
+                <a class="pill-link" href="${intro.contact.linkedin}" target="_blank" rel="noopener noreferrer" data-track="contact_click" data-label="linkedin">Open LinkedIn</a>
+                <a class="pill-link" href="${intro.contact.github}" target="_blank" rel="noopener noreferrer" data-track="contact_click" data-label="github">Open GitHub</a>
+                <a class="pill-link" href="mailto:${intro.contact.email}" data-track="contact_click" data-label="email">Email Me</a>
             `;
 
             wrapper.append(email, linkedin, github, quickLinks);
@@ -534,11 +566,13 @@
             );
 
             state.viewed.add(key);
+            trackEvent("project_view", { project_name: name });
             terminalBody.scrollTop = terminalBody.scrollHeight;
         }
 
         function resetTerminal() {
             terminalBody.classList.add("is-fading");
+            trackEvent("terminal_reset");
 
             window.setTimeout(() => {
                 terminalBody.replaceChildren(buildInitialTranscript());
@@ -557,6 +591,12 @@
         function handleBodyClick(event) {
             const target = event.target.closest("[data-action='show-item']");
             if (!target) {
+                const trackedLink = event.target.closest("[data-track]");
+                if (trackedLink) {
+                    trackEvent(trackedLink.dataset.track, {
+                        label: trackedLink.dataset.label || "unknown"
+                    });
+                }
                 return;
             }
 
@@ -575,6 +615,7 @@
             terminalBody.addEventListener("scroll", syncScrollButton);
 
             scrollToTopBtn.addEventListener("click", () => {
+                trackEvent("scroll_to_top_click");
                 terminalBody.scrollTo({ top: 0, behavior: "smooth" });
             });
 
@@ -593,6 +634,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", init);
+        setupAnalytics();
     </script>
 </body>
 </html>
